@@ -1,10 +1,10 @@
 ### NLP-Intro Repository
-
+---
 The goal of this repository is to show an accumulation of both academic and personal work in understanding NLP.
 
 Where `A#` series is primarily work done from my time at UCSC doing NLP. Where the project comes from a combination of the work and personal research done at university.
 
-A1
+#### A1
 ---
 For A1, where are given a dataset of movie reviews prelabeled positive or negative. Expanded on some given code, we create a Naive Bayes and Logistic Regression classifier in order to classify unseen movie reviews.
 
@@ -14,7 +14,7 @@ python main.py --model NaiveBayes
 python main.py --model LogisticRegression
 ```
 
-A2
+#### A2
 ---
 For A2 where are given a subset of data from the One Billion Word Language Modeling Benchmark. In the first part of the assignment we are tasked to create an **ngram** language model utilizing **MLE without smoothing**, in order to run this problem utilize the following
 
@@ -31,9 +31,12 @@ python main.py --model Ngrams --feature wSmoothing
 
 Part 3 asks for smoothing with interpolation, in order to run this model you can utilize the following command
 ```
-python main.py --model Interpolation --feature wSmoothing
+python main.py --model Interpolation
 ```
 
-Running it without the `--feature` or `-f` will run it without smoothing
+Note running it can be done with or without custom lambdas as shown here
+```
+python main.py --model Interpolation --lambda1 0.1 --lambda2 0.3 --lambda3 0.6
+```
 
-Note this will run the first deliverable of the assignment where lambdas = 0.1, 0.3, 0.6
+You can utilize the `-f` or `--feature` to run models with or without smoothing. 

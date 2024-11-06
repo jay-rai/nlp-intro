@@ -31,8 +31,15 @@ def main():
     parser.add_argument('--feature', '-f', type=str, default='woSmoothing',
                         choices=['woSmoothing', 'wSmoothing'], help="ngrams with or without smoothing")
     parser.add_argument('--path', type=str, default='./A2-Data/', help="path to dataset")
+    parser.add_argument('--lambda1', type=float, default=0.1, help="Weight for unigram model in interpolation")
+    parser.add_argument('--lambda2', type=float, default=0.3, help="Weight for bigram model in interpolation")
+    parser.add_argument('--lambda3', type=float, default=0.6, help="Weight for trigram model in interpolation")
     args = parser.parse_args()
-
+    
+    if args.lambda1 + args.lambda2 + args.lambda3 != 1:
+        raise ValueError("Lambda values must sum to 1")
+    
+    
     # load our data provided its the given .tokens from the assignment
     try:
         if args.path:
@@ -80,9 +87,7 @@ def main():
     print("Trigram Model Perplexity on 'HDTV .':", trigram_model.perplexity(test_input))
 
     if args.model == 'Interpolation':
-        lambda1 = 0.1
-        lambda2 = 0.3
-        lambda3 = 0.6
+        lambda1, lambda2, lambda3 = args.lambda1, args.lambda2, args.lambda3
         # Initialize Interpolated Model with generated lambdas
         interpolated_model = InterpolatedModel(unigram_model, bigram_model, trigram_model, lambda1, lambda2, lambda3)
         

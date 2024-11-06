@@ -35,19 +35,19 @@ class NgramModel:
                 ngram = tuple(tokens[i:i+self.n])
                 prob = self.probability(ngram)
                 log_prob_sum += math.log(prob if prob > 0 else 1 / self.vocab_size)
-            total_tokens += len(sentence) + 1  # including <STOP>
+            total_tokens += len(sentence) + 1
         return math.exp(-log_prob_sum / total_tokens)
     
 class NgramModelSmoothing:
     def __init__(self, n, alpha=1.0):
         self.n = n
-        self.alpha = alpha  # smoothing parameter
+        self.alpha = alpha
         self.ngram_counts = defaultdict(int)
         self.context_counts = defaultdict(int)
-        self.vocab_size = 0  # to be set after vocabulary is created
+        self.vocab_size = 0
 
     def set_vocab_size(self, vocab_size):
-        self.vocab_size = vocab_size  # Set vocabulary size for smoothing
+        self.vocab_size = vocab_size
 
     def train(self, sentences):
         for sentence in sentences:
@@ -60,7 +60,6 @@ class NgramModelSmoothing:
 
     def probability(self, ngram):
         context = ngram[:-1]
-        # Apply additive smoothing
         smoothed_count = self.ngram_counts[ngram] + self.alpha
         smoothed_context_count = self.context_counts[context] + (self.alpha * self.vocab_size)
         return smoothed_count / smoothed_context_count
@@ -74,7 +73,7 @@ class NgramModelSmoothing:
                 ngram = tuple(tokens[i:i+self.n])
                 prob = self.probability(ngram)
                 log_prob_sum += math.log(prob if prob > 0 else 1 / self.vocab_size)
-            total_tokens += len(sentence) + 1  # including <STOP>
+            total_tokens += len(sentence) + 1
         return math.exp(-log_prob_sum / total_tokens)
     
 
@@ -97,15 +96,15 @@ class InterpolatedModel:
                              self.lambda3 * trigram_prob)
         return interpolated_prob
 
-    def perplexity(self, sentences):
-        import math
+    def perplexity(self, sentences, epsilon=1e-10):
         log_prob_sum = 0
         total_tokens = 0
         for sentence in sentences:
             tokens = ['<START>', '<START>'] + sentence + ['<STOP>']
             for i in range(2, len(tokens)):
-                ngram = tuple(tokens[max(0, i-2):i+1])  # Trigram or smaller if near start
+                ngram = tuple(tokens[max(0, i-2):i+1])
                 prob = self.probability(ngram)
-                log_prob_sum += math.log(prob)
-            total_tokens += len(sentence) + 1  # Including <STOP> but not <START>
+                
+                log_prob_sum += math.log(prob + epsilon)
+            total_tokens += len(sentence) + 1
         return math.exp(-log_prob_sum / total_tokens)
